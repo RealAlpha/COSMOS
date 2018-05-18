@@ -55,8 +55,14 @@ else # Linux
 
   #apt dependencies - lightly tested on Ubuntu 14.04 LTS
   cmdtoapt="apt-get update -y; apt-get install -y gcc; apt-get install -y g++; apt-get install -y libssl-dev; apt-get install -y libyaml-dev; apt-get install -y libffi-dev; apt-get install -y libreadline6-dev; apt-get install -y zlib1g-dev; apt-get install -y libgdbm3; apt-get install -y libgdbm-dev; apt-get install -y libncurses5-dev; apt-get install -y git; apt-get install -y libgstreamer0.10-dev; apt-get install -y libgstreamer-plugins-base0.10-dev; apt-get install -y cmake; apt-get install -y freeglut3; apt-get install -y freeglut3-dev; apt-get install -y qt4-default; apt-get install -y qt4-dev-tools; apt-get install -y libsmokeqt4-dev;"
+  
+  # Pacman dependencies - (lightly) tested on Arch Linux 4.13.11 x86_64 (running the Gnome DE)
+  ### NOTE: --noconfirm is pretty much the same as -y with apt-get/yum, --needed ensures it only installs the required packages, and doesn't try and reinstall them if they have already been installed, and -dev packages often missing because they are merged with regular release.
+  cmdtopacman="pacman -S --noconfirm --needed gcc; pacman -S --noconfirm --needed openssl; pacman -S --noconfirm --needed libyaml; pacman -S --noconfirm --needed libffi; pacman -S --noconfirm --needed readline; pacman -S --noconfirm --needed zlib; pacman -S --noconfirm --needed gdbm; pacman -S --noconfirm --needed ncurses; pacman -S --noconfirm --needed git; pacman -S --noconfirm --needed gstreamer; pacman -S --noconfirm --needed gst-plugins-base-libs; pacman -S --noconfirm --needed cmake; pacman -S --noconfirm --needed freeglut; pacman -S --noconfirm --needed qt4;"
+  
   YUM_CMD=$(which yum)
   APT_GET_CMD=$(which apt-get)
+  PACMAN_CMD=$(which pacman)
 
 
   # Install dependencies
@@ -71,6 +77,8 @@ else # Linux
     sudo bash -c "$cmdtoyum"
    elif [[ ! -z $APT_GET_CMD ]]; then
     sudo bash -c "$cmdtoapt"
+   elif [[ ! -z $PACMAN_CMD ]]; then
+    sudo bash -c "$cmdtopacman"
    else
     echo "error can't figure out what package manager is being used"
     exit 1;
@@ -80,6 +88,8 @@ else # Linux
     su -c "$cmdtoyum"
    elif [[ ! -z $APT_GET_CMD ]]; then
     su -c "$cmdtoapt"
+   elif [[ ! -z $PACMAN_CMD ]]; then
+    su -c "$cmdtopacman"
    else
     echo "error can't figure out what package manager is being used"
     exit 1;
